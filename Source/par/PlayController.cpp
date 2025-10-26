@@ -17,6 +17,8 @@ APlayController::APlayController()
 	GetCharacterMovement()->JumpZVelocity = 600.f;
 	GetCharacterMovement()->AirControl = 0.3f;
 
+	GetCharacterMovement()->MaxWalkSpeed = playerSpeed;
+
 	// 컨트롤 회전 비활성화
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -32,8 +34,12 @@ void APlayController::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("MoveHoriaontal", this, &APlayController::MoveHoriaontal);
 	PlayerInputComponent->BindAxis("Turn", this, &APlayController::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayController::LookUp);
+
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+
+	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &APlayController::RuningMove);
+	PlayerInputComponent->BindAction("Run", IE_Released, this, &APlayController::RuningEnd);
 
 }
 
@@ -74,6 +80,16 @@ void APlayController::MoveHoriaontal(float value)
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction, value);
 	}
+}
+
+void APlayController::RuningMove()
+{
+	GetCharacterMovement()->MaxWalkSpeed = RunSpeed;
+}
+
+void APlayController::RuningEnd()
+{
+	GetCharacterMovement()->MaxWalkSpeed = playerSpeed;
 }
 	
 // Called every frame

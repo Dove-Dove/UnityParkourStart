@@ -11,6 +11,10 @@ class PAR_API APlayController : public ACharacter
 {
 	GENERATED_BODY()
 
+private:
+	float playerSpeed = 300;
+	float RunSpeed = 600;
+	
 public:
 	// Sets default values for this character's properties
 	APlayController();
@@ -23,9 +27,8 @@ protected:
 	void LookUp(float value);
 	void MoveForward(float value);
 	void MoveHoriaontal(float value);
-
-	//UPROPERTY(EditAnywhere, Category = PlayerSetting)
-	//float speed = 200.0f;
+	void RuningMove();
+	void RuningEnd();
     
 
 

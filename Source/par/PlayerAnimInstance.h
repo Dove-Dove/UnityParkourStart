@@ -22,6 +22,7 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Character")
 	float playerSpeed;
 
+
 	UPROPERTY(BlueprintReadOnly, Category = "Character")
 	class APlayController* player;
 };
