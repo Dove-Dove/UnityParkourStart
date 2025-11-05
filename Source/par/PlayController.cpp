@@ -4,6 +4,7 @@
 #include "PlayController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Camera/CameraComponent.h"
 
 // Sets default values
 APlayController::APlayController()
@@ -18,6 +19,17 @@ APlayController::APlayController()
 	GetCharacterMovement()->AirControl = 0.3f;
 
 	GetCharacterMovement()->MaxWalkSpeed = playerSpeed;
+
+	// SpringArm 생성
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	SpringArmComp->SetupAttachment(RootComponent);
+	SpringArmComp->TargetArmLength = 300.f;
+	SpringArmComp->bUsePawnControlRotation = true;
+
+	// Camera 생성
+	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
+	CameraComp->bUsePawnControlRotation = false;
 
 	// 컨트롤 회전 비활성화
 	bUseControllerRotationPitch = false;
@@ -35,8 +47,8 @@ void APlayController::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("Turn", this, &APlayController::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayController::LookUp);
 
-	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
-	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	//PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayController::ScanObject);
+	//PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &APlayController::RuningMove);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &APlayController::RuningEnd);
@@ -90,6 +102,40 @@ void APlayController::RuningMove()
 void APlayController::RuningEnd()
 {
 	GetCharacterMovement()->MaxWalkSpeed = playerSpeed;
+}
+
+void APlayController::ScanObject()
+{
+	FHitResult HitResult;  
+	FVector Start = GetActorLocation();
+	FVector Forward = GetActorForwardVector(); 
+	FVector End = Start + Forward * ScenLen; 
+
+	FCollisionQueryParams Params;
+	Params.AddIgnoredActor(this); 
+
+	bool bHit = GetWorld()->LineTraceSingleByChannel(
+		HitResult,
+		Start,
+		End,
+		ECC_Visibility, // 충돌 채널 (보통 Visibility 사용)
+		Params
+	);
+
+
+	if (bHit)
+	{
+		UE_LOG(LogTemp, Log, TEXT("HitObjeecc"));
+		AActor* HitObj = HitResult.GetActor();
+
+		DrawDebugLine(GetWorld(), Start, HitResult.ImpactPoint, FColor::Red, false, 1.f, 0, 1.f);
+		DrawDebugPoint(GetWorld(), HitResult.ImpactPoint, 10.f, FColor::Blue, false, 1.f);
+	}
+
+	//else
+	//{
+	//	Jump();
+	//}
 }
 	
 // Called every frame

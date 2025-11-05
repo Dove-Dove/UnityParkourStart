@@ -18,3 +18,8 @@ void UPlayerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 
 }
+
+//void UPlayerAnimInstance::JumpAmime()
+//{
+//    jumping = true;
+//}

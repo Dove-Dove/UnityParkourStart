@@ -13,10 +13,14 @@ UCLASS()
 class PAR_API UPlayerAnimInstance : public UAnimInstance
 {
 	GENERATED_BODY()
+private:
+	bool jumping = false;
 
 public:
 	// 매 프레임 갱신
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
+	//void JumpAmime();
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Character")
