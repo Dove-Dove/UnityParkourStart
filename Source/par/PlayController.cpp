@@ -47,8 +47,8 @@ void APlayController::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("Turn", this, &APlayController::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &APlayController::LookUp);
 
-	//PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayController::ScanObject);
-	//PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
+	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &APlayController::ScanObject);
+	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	PlayerInputComponent->BindAction("Run", IE_Pressed, this, &APlayController::RuningMove);
 	PlayerInputComponent->BindAction("Run", IE_Released, this, &APlayController::RuningEnd);
@@ -132,10 +132,10 @@ void APlayController::ScanObject()
 		DrawDebugPoint(GetWorld(), HitResult.ImpactPoint, 10.f, FColor::Blue, false, 1.f);
 	}
 
-	//else
-	//{
-	//	Jump();
-	//}
+	else
+	{
+		Jump();
+	}
 }
 	
 // Called every frame
